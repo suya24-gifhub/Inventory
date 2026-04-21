@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="คลังบ้าน">
+<meta name="theme-color" content="#0a0f0a">
+<title>คลังของใช้ในบ้าน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{display:none}
+body{background:#0a0f0a;font-family:'Sarabun','Noto Sans Thai',sans-serif;color:#e8f0e8;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;padding-bottom:110px}
+input,textarea,button{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#3a5a3a}
+.glow1{position:fixed;top:-120px;left:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.07),transparent 70%);pointer-events:none;z-index:0}
+.glow2{position:fixed;bottom:100px;right:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.06),transparent 70%);pointer-events:none;z-index:0}
+.header{padding:20px 20px 0;display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+.header-title{font-size:22px;font-weight:800;letter-spacing:-.5px;color:#4ade80}
+.header-sub{font-size:12px;color:#4b7a55;margin-top:2px}
+.lang-btn{background:#141f14;border:1px solid #2a3f2a;border-radius:20px;padding:6px 14px;font-size:13px;color:#4ade80;cursor:pointer;font-weight:600}
+.stats{display:flex;gap:10px;padding:14px 20px 10px;position:relative;z-index:1}
+.stat-card{flex:1;background:#0f1a0f;border:1px solid #1e2e1e;border-radius:14px;padding:10px 8px;text-align:center}
+.stat-num{font-size:22px;font-weight:800}
+.stat-lbl{font-size:10px;color:#4b7a55;margin-top:2px}
+.search-wrap{padding:0 20px 10px;position:relative;z-index:1}
+.search-inp{width:100%;background:#141f14;border:1px solid #2a3f2a;border-radius:12px;padding:10px 14px;color:#e8f0e8;font-size:14px}
+.tabs{overflow-x:auto;display:flex;gap:8px;padding:0 20px 14px;scrollbar-width:none;position:relative;z-index:1}
+.tab-btn{flex-shrink:0;display:flex;align-items:center;gap:5px;background:#0f1a0f;border:1px solid #1e2e1e;border-radius:20px;padding:7px 13px;font-size:12px;cursor:pointer;color:#6b8f6b;font-weight:400;white-space:nowrap}
+.tab-btn.active{background:#1a3a1a;border-color:#4ade80;color:#4ade80;font-weight:700}
+.badge{background:#ef4444;color:#fff;border-radius:10px;font-size:10px;padding:1px 5px;font-weight:700}
+.shop-actions{display:flex;gap:10px;padding:0 20px 14px}
+.list{padding:0 20px;position:relative;z-index:1}
+.empty{text-align:center;padding:40px 0;color:#4b7a55;font-size:14px}
+.card{background:#0f1a0f;border:1px solid #1e2e1e;border-radius:18px;padding:14px;margin-bottom:10px;animation:fadeIn .2s ease both}
+.card.low{border-color:#3d1500}.card.exp{border-color:#3f0d0d}
+.card-top{display:flex;gap:12px;align-items:flex-start}
+.cat-icon{width:48px;height:48px;border-radius:13px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px}
+.cat-icon img{width:100%;height:100%;object-fit:cover}
+.card-body{flex:1;min-width:0}
+.card-name{font-size:13px;font-weight:700;color:#e8f0e8;line-height:1.35;padding-right:6px}
+.card-actions{display:flex;gap:3px;flex-shrink:0}
+.icon-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:2px}
+.qty-row{display:flex;align-items:center;gap:7px;margin-top:4px}
+.qty-num{font-size:17px;font-weight:800}
+.qty-unit{font-size:11px;color:#4b7a55}
+.progress-bar{flex:1;height:4px;background:#1e2e1e;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px}
+.qty-min{font-size:10px;color:#4b7a55}
+.badges{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.pill{font-size:10px;font-weight:700;border-radius:8px;padding:2px 8px}
+.card-controls{display:flex;align-items:center;gap:8px;margin-top:10px}
+.ctrl-btn{width:34px;height:34px;border-radius:17px;background:#1e2e1e;border:none;color:#e8f0e8;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+.shop-toggle{flex:1;padding:7px 0;border-radius:10px;font-size:12px;cursor:pointer;font-weight:600;background:transparent;border:1px solid #1e2e1e;color:#4b7a55}
+.shop-toggle.on{background:#1a3a1a;border-color:#4ade80;color:#4ade80}
+.fabs{position:fixed;bottom:30px;right:20px;display:flex;flex-direction:column;gap:12px;z-index:100}
+.fab{border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fab-use{width:52px;height:52px;border-radius:26px;background:linear-gradient(135deg,#fb923c,#f97316);box-shadow:0 4px 20px rgba(249,115,22,.4);font-size:22px}
+.fab-add{width:58px;height:58px;border-radius:29px;background:linear-gradient(135deg,#4ade80,#22c55e);font-size:28px;box-shadow:0 4px 24px rgba(74,222,128,.4)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-end;display:none}
+.overlay.open{display:flex}
+.sheet{width:100%;max-width:430px;margin:0 auto;background:#0f1a0f;border-radius:24px 24px 0 0;padding:24px 20px 50px;border:1px solid #1e2e1e;max-height:92vh;overflow-y:auto}
+.inp{width:100%;background:#141f14;border:1px solid #2a3f2a;border-radius:12px;padding:11px 14px;color:#e8f0e8;font-size:14px}
+.lbl{font-size:11px;color:#4b7a55;margin-bottom:5px}
+.cat-grid{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.cat-pill{flex:1 1 calc(33% - 6px);padding:8px 4px;border-radius:12px;font-size:11px;cursor:pointer;border:1px solid #2a3f2a;color:#4b7a55;font-weight:600;background:#141f14;text-align:center}
+.unit-grid{display:flex;gap:5px;flex-wrap:wrap}
+.unit-pill{padding:5px 10px;border-radius:20px;font-size:12px;cursor:pointer;background:#141f14;border:1px solid #2a3f2a;color:#4b7a55}
+.unit-pill.sel{background:#1a3a1a;border-color:#4ade80;color:#4ade80;font-weight:700}
+.photo-drop{width:100%;height:80px;background:#141f14;border:2px dashed #2a3f2a;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;color:#4b7a55;font-size:13px}
+.photo-drop img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.btn-row{display:flex;gap:10px;margin-top:20px}
+.btn{border-radius:12px;padding:13px;font-size:14px;cursor:pointer;font-weight:800;border:none}
+.btn-cancel{flex:1;background:#141f14;border:1px solid #2a3f2a;color:#6b8f6b}
+.btn-del{flex:1;background:#2a0f0f;border:1px solid #5a1a1a;color:#f87171}
+.btn-save{flex:2;background:linear-gradient(135deg,#4ade80,#22c55e);color:#0a0f0a}
+.big-btn{width:100%;padding:18px;border-radius:18px;cursor:pointer;text-align:left;display:block;margin-bottom:12px}
+.confirm-btn{width:100%;margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#fb923c,#f97316);color:#fff;font-size:14px;cursor:pointer;font-weight:800;border:none}
+.scan-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;margin-bottom:8px;cursor:pointer}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e2e1e}
+.spinner{animation:spin 1s linear infinite;display:inline-block}
+.voice-area{width:100%;background:#141f14;border:1px solid #2a3f2a;border-radius:12px;padding:11px 14px;color:#e8f0e8;font-size:13px;resize:none;line-height:1.6;margin-bottom:10px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="glow1"></div><div class="glow2"></div>
+
+<div class="header">
+  <div><div class="header-title" id="hTitle">คลังของใช้ในบ้าน</div><div class="header-sub" id="hSub">Inventaire Maison</div></div>
+  <button class="lang-btn" id="langBtn" onclick="toggleLang()">🇫🇷 FR</button>
+</div>
+<div class="stats">
+  <div class="stat-card"><div class="stat-num" id="sTotal" style="color:#4ade80">0</div><div class="stat-lbl" id="sLbl1">มีอยู่</div></div>
+  <div class="stat-card"><div class="stat-num" id="sLow" style="color:#fb923c">0</div><div class="stat-lbl" id="sLbl2">ของใกล้หมด</div></div>
+  <div class="stat-card"><div class="stat-num" id="sAlert" style="color:#f87171">0</div><div class="stat-lbl" id="sLbl3">การแจ้งเตือน</div></div>
+</div>
+<div class="search-wrap"><input class="search-inp" id="searchQ" placeholder="🔍 ค้นหา..." oninput="renderList()"></div>
+<div class="tabs" id="tabsRow"></div>
+<div class="shop-actions" id="shopBar" style="display:none">
+  <button style="flex:1;background:#1a3a1a;border:1px solid #4ade80;border-radius:12px;padding:10px;font-size:13px;color:#4ade80;cursor:pointer;font-weight:600" id="copyBtn" onclick="copyList()">📋 <span id="copyLbl">คัดลอก</span></button>
+  <button style="flex:1;background:#1a0f0f;border:1px solid #3f1515;border-radius:12px;padding:10px;font-size:13px;color:#f87171;cursor:pointer;font-weight:600" onclick="clearShop()">🗑 <span id="clearLbl">ล้างรายการ</span></button>
+</div>
+<div class="list" id="mainList"></div>
+
+<div class="fabs">
+  <button class="fab fab-use" onclick="openUse()" title="ใช้ของ">📤</button>
+  <button class="fab fab-add" onclick="openAdd()">+</button>
+</div>
+
+<!-- ADD CHOICE -->
+<div class="overlay" id="ovAdd">
+<div class="sheet">
+  <div style="font-size:18px;font-weight:800;color:#4ade80;margin-bottom:4px">+ <span id="lAdd">เพิ่มของ</span></div>
+  <div style="font-size:12px;color:#4b7a55;margin-bottom:22px" id="lOrScan">เลือกวิธีเพิ่มสินค้า</div>
+  <button class="big-btn" style="background:linear-gradient(135deg,#0c2a18,#122e22);border:2px solid #4ade80" onclick="document.getElementById('inpScanAdd').click()">
+    <div style="font-size:36px;margin-bottom:6px">📸</div>
+    <div style="font-size:16px;font-weight:800;color:#4ade80" id="lScanR">สแกนใบเสร็จ / รูปสินค้า</div>
+    <div style="font-size:12px;color:#4b7a55;margin-top:4px" id="lScanH">ถ่ายรูปหรืออัปโหลดใบเสร็จ</div>
+  </button>
+  <button class="big-btn" style="border:1px solid #2a3f2a;display:flex;align-items:center;gap:14px;padding:15px 18px" onclick="closeAll();openManual(null)">
+    <span style="font-size:26px">✏️</span><div style="font-size:15px;font-weight:700;color:#a3d4a3" id="lManual">เพิ่มเอง</div>
+  </button>
+  <button class="btn btn-cancel" style="width:100%" onclick="closeAll()" id="lCan0">ยกเลิก</button>
+</div></div>
+
+<!-- SCANNING -->
+<div class="overlay" id="ovScanning">
+<div class="sheet" style="text-align:center;padding:30px 20px 50px">
+  <div id="scanPrev"></div>
+  <div class="spinner" style="font-size:48px">🤖</div>
+  <div style="font-size:17px;font-weight:700;color:#4ade80;margin-top:14px" id="lScanning">AI กำลังอ่านรูป...</div>
+</div></div>
+
+<!-- SCAN RESULT -->
+<div class="overlay" id="ovScanRes">
+<div class="sheet">
+  <div id="scanResPrev"></div>
+  <div style="font-size:16px;font-weight:800;color:#4ade80;margin-bottom:4px" id="scanResTitle"></div>
+  <div style="font-size:12px;color:#4b7a55;margin-bottom:14px" id="lSelectH">แตะเพื่อเลือก</div>
+  <div id="scanResList"></div>
+  <div style="display:flex;gap:10px;margin-top:16px">
+    <button class="btn btn-cancel" style="flex:1" onclick="closeAll();openAdd()">← <span id="lCan1">ยกเลิก</span></button>
+    <button class="btn btn-save" style="flex:2" id="btnAddPicked" onclick="addPicked()">+ <span id="lAddSel">เพิ่มที่เลือก</span> (0)</button>
+  </div>
+</div></div>
+
+<!-- MANUAL -->
+<div class="overlay" id="ovManual">
+<div class="sheet">
+  <div style="font-size:17px;font-weight:800;color:#4ade80;margin-bottom:20px" id="manTitle">✏️ เพิ่มเอง</div>
+  <div class="photo-drop" id="photoDrop" onclick="document.getElementById('inpPhoto').click()"><span id="photoLbl">📷 เพิ่มรูป</span></div>
+  <input type="file" id="inpPhoto" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+  <input class="inp" id="fName" placeholder="ชื่อสินค้า" style="margin-bottom:12px">
+  <div class="cat-grid" id="catGrid"></div>
+  <div style="display:flex;gap:10px;margin-bottom:12px">
+    <div style="flex:1"><div class="lbl" id="lQty">จำนวน</div><input type="number" class="inp" id="fQty" value="1" min="0"></div>
+    <div style="flex:1"><div class="lbl" id="lMin">จำนวนขั้นต่ำ</div><input type="number" class="inp" id="fMin" value="1" min="0"></div>
+  </div>
+  <div style="margin-bottom:12px"><div class="lbl" id="lUnit">หน่วย</div><div class="unit-grid" id="unitGrid"></div></div>
+  <div style="margin-bottom:20px"><div class="lbl" id="lExp">วันหมดอายุ</div><input type="date" class="inp" id="fExp" style="color-scheme:dark"></div>
+  <div class="btn-row">
+    <button class="btn btn-cancel" onclick="closeAll()" id="lCan2">ยกเลิก</button>
+    <button class="btn btn-del" id="btnDel" style="display:none" onclick="deleteEdit()">ลบ</button>
+    <button class="btn btn-save" onclick="saveManual()" id="lSave">บันทึก</button>
+  </div>
+</div></div>
+
+<!-- USE -->
+<div class="overlay" id="ovUse">
+<div class="sheet">
+  <div style="font-size:18px;font-weight:800;color:#fb923c;margin-bottom:4px">📤 <span id="lUse">ใช้ของ</span></div>
+  <div style="font-size:12px;color:#6b5a4b;margin-bottom:20px" id="lUseH">เลือกวิธีหักสต๊อก</div>
+  <button class="big-btn" style="background:linear-gradient(135deg,#1a0e05,#2a1a08);border:2px solid #fb923c" onclick="document.getElementById('inpShelf').click()">
+    <div style="font-size:32px;margin-bottom:6px">📸</div>
+    <div style="font-size:16px;font-weight:800;color:#fb923c" id="lShelf">ถ่ายรูปของที่เหลือ</div>
+    <div style="font-size:12px;color:#7a5a3a;margin-top:4px" id="lShelfH">AI นับของที่เห็นในรูป แล้วอัปเดตยอดให้</div>
+  </button>
+  <div style="background:#141f14;border:1px solid #2a3f2a;border-radius:16px;padding:15px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px">
+    <span style="font-size:26px">🎤</span>
+    <div><div style="font-size:15px;font-weight:700;color:#a3d4a3" id="lVoice">บอก AI ว่าใช้อะไร</div><div style="font-size:11px;color:#4b7a55;margin-top:2px" id="lVoiceH">เช่น 'ใช้นม 1 ขวด และไข่ 3 ฟอง'</div></div>
+  </div>
+  <textarea class="voice-area" id="voiceTxt" rows="3" placeholder="เช่น: ใช้นม 1 ขวด, ไข่ 3 ฟอง..."></textarea>
+  <button id="voiceSubmitBtn" style="width:100%;padding:11px;border-radius:12px;background:linear-gradient(135deg,#4ade80,#22c55e);border:none;color:#0a0f0a;font-size:14px;cursor:pointer;font-weight:800;margin-bottom:14px" onclick="submitVoice()">✓ <span id="lSubmit">ส่งให้ AI วิเคราะห์</span></button>
+  <div id="voiceProc" style="display:none;text-align:center;padding:10px 0;margin-bottom:14px">
+    <div class="spinner" style="font-size:30px">🤖</div>
+    <div style="font-size:14px;color:#4ade80;margin-top:8px" id="lVoiceProc">AI กำลังประมวลผล...</div>
+  </div>
+  <div id="voiceRes" style="display:none;background:#0a1a0a;border:1px solid #2a4a2a;border-radius:16px;padding:16px;margin-bottom:14px">
+    <div style="font-size:13px;font-weight:700;color:#4ade80;margin-bottom:10px" id="lVRes">✓ AI เข้าใจว่าใช้:</div>
+    <div id="voiceResList"></div>
+    <button class="confirm-btn" id="lConfD" onclick="confirmDeduct()">✓ ยืนยันหักสต๊อก</button>
+  </div>
+  <div id="shelfProc" style="display:none;text-align:center;padding:20px 0;margin-bottom:14px">
+    <div id="shelfProcPrev"></div>
+    <div class="spinner" style="font-size:40px">🤖</div>
+    <div style="font-size:15px;font-weight:700;color:#fb923c;margin-top:10px">AI กำลังนับของ...</div>
+  </div>
+  <div id="shelfRes" style="display:none;background:#0a1a0a;border:1px solid #2a4a2a;border-radius:16px;padding:16px;margin-bottom:14px">
+    <div id="shelfResImg"></div>
+    <div style="font-size:13px;font-weight:700;color:#4ade80;margin-bottom:10px" id="lSRes">📊 AI นับของที่เหลือได้:</div>
+    <div id="shelfResList"></div>
+    <button class="confirm-btn" id="lConfS" onclick="confirmShelf()">✓ ยืนยันอัปเดตยอด</button>
+  </div>
+  <button class="btn btn-cancel" style="width:100%" onclick="closeAll()" id="lCan3">ยกเลิก</button>
+</div></div>
+
+<input type="file" id="inpScanAdd" accept="image/*" style="display:none" onchange="handleScanAdd(event)">
+<input type="file" id="inpShelf" accept="image/*" style="display:none" onchange="handleShelf(event)">
+
+<script>
+const TR = {
+  th:{appTitle:"คลังของใช้ในบ้าน",appSub:"Inventaire Maison",langBtn:"🇫🇷 FR",
+    s1:"มีอยู่",s2:"ของใกล้หมด",s3:"การแจ้งเตือน",search:"🔍 ค้นหา...",
+    all:"ทั้งหมด",fresh:"ของสด",dry:"ของแห้ง",freezer:"ช่องแช่แข็ง",meat:"เนื้อสัตว์",household:"ของใช้ทั่วไป",drinks:"เครื่องดื่ม",alertsTab:"แจ้งเตือน",shopping:"รายการซื้อของ",
+    copyList:"คัดลอก",clearList:"ล้างรายการ",emptyShop:"ไม่มีรายการที่ต้องซื้อ 🎉",emptyItems:"ยังไม่มีสินค้า",noAlerts:"ทุกอย่างปกติดี ✓",
+    addItem:"เพิ่มของ",orScan:"เลือกวิธีเพิ่มสินค้า",scanReceipt:"สแกนใบเสร็จ / รูปสินค้า",scanHint:"ถ่ายรูปหรืออัปโหลดใบเสร็จ",manualAdd:"เพิ่มเอง",cancel:"ยกเลิก",
+    scanning:"AI กำลังอ่านรูป...",scanResult:"AI พบสินค้า",noItems:"ไม่พบสินค้า",selectHint:"แตะเพื่อเลือก",addSelected:"เพิ่มที่เลือก",
+    addPhoto:"📷 เพิ่มรูป",qty:"จำนวน",minStock:"จำนวนขั้นต่ำ",unit:"หน่วย",expiry:"วันหมดอายุ",save:"บันทึก",delete:"ลบ",edit:"✏️ แก้ไข",
+    useMode:"ใช้ของ / Déduire",useModeHint:"เลือกวิธีหักสต๊อก",
+    scanShelf:"ถ่ายรูปของที่เหลือ",scanShelfHint:"AI นับของที่เห็นในรูป แล้วอัปเดตยอดให้",
+    voiceUse:"บอก AI ว่าใช้อะไร",voiceHint:"เช่น 'ใช้นม 1 ขวด และไข่ 3 ฟอง'",voicePH:"เช่น: ใช้นม 1 ขวด, ไข่ 3 ฟอง...",
+    voiceProc:"AI กำลังประมวลผล...",voiceResult:"✓ AI เข้าใจว่าใช้:",confirmDeduct:"✓ ยืนยันหักสต๊อก",
+    shelfResult:"📊 AI นับของที่เหลือได้:",confirmShelf:"✓ ยืนยันอัปเดตยอด",
+    addToList:"🛒 เพิ่มเข้ารายการ",inList:"✓ ในรายการซื้อ",
+    expired:"หมดอายุแล้ว",expiresIn:"หมดอายุใน",days:"วัน",lowPill:"ของใกล้หมด",
+    pcs:"ชิ้น",kg:"กก.",g:"กรัม",l:"ลิตร",ml:"มล.",pack:"แพ็ค",bottle:"ขวด",bag:"ถุง",box:"กล่อง",can:"กระป๋อง",jar:"กระปุก",sachet:"ซอง",
+    copied:"✓ คัดลอกแล้ว!",submit:"✓ ส่งให้ AI วิเคราะห์",
+  },
+  fr:{appTitle:"Inventaire Maison",appSub:"คลังของใช้ในบ้าน",langBtn:"🇹🇭 ไทย",
+    s1:"En stock",s2:"Stock bas",s3:"Alertes",search:"🔍 Rechercher...",
+    all:"Tout",fresh:"Frais",dry:"Épicerie",freezer:"Congélateur",meat:"Viandes",household:"Ménager",drinks:"Boissons",alertsTab:"Alertes",shopping:"Courses",
+    copyList:"Copier",clearList:"Vider",emptyShop:"Rien à acheter 🎉",emptyItems:"Aucun article",noAlerts:"Tout va bien ✓",
+    addItem:"Ajouter",orScan:"Comment voulez-vous ajouter?",scanReceipt:"Scanner reçu / produit",scanHint:"Photo ou reçu — l'IA lira pour vous",manualAdd:"Saisie manuelle",cancel:"Annuler",
+    scanning:"IA analyse...",scanResult:"L'IA a trouvé",noItems:"Aucun article",selectHint:"Appuyez pour sélectionner",addSelected:"Ajouter",
+    addPhoto:"📷 Photo",qty:"Quantité",minStock:"Stock min.",unit:"Unité",expiry:"Expiration",save:"Enregistrer",delete:"Supprimer",edit:"✏️ Modifier",
+    useMode:"Utiliser / Déduire",useModeHint:"Comment déduire le stock?",
+    scanShelf:"Photo du stock restant",scanShelfHint:"L'IA compte et met à jour",
+    voiceUse:"Dicter à l'IA",voiceHint:"Ex: 'j'ai utilisé 1 lait et 3 œufs'",voicePH:"Ex: lait 1 bouteille, œufs 3...",
+    voiceProc:"L'IA traite...",voiceResult:"✓ L'IA a compris:",confirmDeduct:"✓ Confirmer déduction",
+    shelfResult:"📊 L'IA a compté:",confirmShelf:"✓ Confirmer mise à jour",
+    addToList:"🛒 Ajouter",inList:"✓ Dans la liste",
+    expired:"Expiré",expiresIn:"Expire dans",days:"j",lowPill:"Stock bas",
+    pcs:"pcs",kg:"kg",g:"g",l:"L",ml:"ml",pack:"paquet",bottle:"bouteille",bag:"sac",box:"boîte",can:"boîte",jar:"pot",sachet:"sachet",
+    copied:"✓ Copié!",submit:"✓ Envoyer",
+  }
+};
+const CAT={fresh:{icon:"🥬",color:"#4ade80",bg:"#052e16"},dry:{icon:"🌾",color:"#fbbf24",bg:"#2d1b00"},freezer:{icon:"❄️",color:"#60a5fa",bg:"#0c1a3a"},meat:{icon:"🥩",color:"#f87171",bg:"#2a0a0a"},household:{icon:"🧴",color:"#c084fc",bg:"#1e0a3c"},drinks:{icon:"🥤",color:"#34d399",bg:"#022c22"}};
+const UNITS=["pcs","kg","g","l","ml","pack","bottle","bag","box","can","jar","sachet"];
+
+let _id=1;
+const mk=(name,cat,qty,unit,min=1)=>({id:_id++,name,category:cat,qty,unit,minQty:min,expiry:"",photo:null});
+const SEED=[
+  mk("กาแฟแคปซูล / Capsules café","dry",1,"pack"),mk("ราเมน / Ramen","dry",5,"sachet",3),mk("มาม่าต้มยำ / Mama Tom Yum","dry",1,"sachet"),mk("มาม่าหมูสับ / Mama Porc","dry",4,"sachet",2),mk("ไวไว / Waiwai","dry",2,"sachet"),
+  mk("เส้นอูด้ง / Udon","dry",1,"pack"),mk("วุ้นเส้น / Vermicelles","dry",2,"pack"),mk("พาสต้า / Pâtes","dry",1,"pack",2),mk("สปาเก็ตตี้ / Spaghetti","dry",1,"pack"),mk("มักกะโรนี / Macaroni","dry",1,"pack"),
+  mk("ซอสพาสต้า / Sauce pâtes","dry",3,"jar",2),mk("ซอสมะเขือเทศ / Concentré tomate","dry",8,"can",4),mk("ข้าวญี่ปุ่น / Riz japonais","dry",1,"kg"),mk("ข้าวสีแดง / Riz rouge","dry",1,"kg"),mk("ควินัว / Quinoa","dry",1,"kg"),
+  mk("แป้งพิซซ่า / Farine pizza","dry",1,"bag"),mk("แป้งขาว / Farine blanche","dry",9,"kg",3),mk("ซอสถั่วเหลือง / Sauce soja","dry",2,"bottle",1),mk("Kikkoman 1L","dry",1,"bottle"),mk("ซอสหอยนางรม / Sauce huître","dry",2,"bottle",1),
+  mk("น้ำปลา / Nuoc-mâm","dry",1,"bottle",1),mk("ซอสสุกี้ / Sukiyaki","dry",1,"bottle"),mk("ซอสคาเฟ่เดอปารีส / Café de Paris","dry",1,"jar"),mk("ซอสยูซุปง / Yuzu ponzu","dry",2,"bottle"),mk("น้ำมันมะกอก / Huile d'olive","dry",1,"bottle",1),
+  mk("บัลซามิก / Balsamique","dry",1,"bottle"),mk("น้ำส้มสายชู / Vinaigre","dry",1,"bottle"),mk("น้ำส้มสายชูทำความสะอาด / Vinaigre ménager","dry",3,"bottle",1),mk("น้ำส้มซูชิ / Vinaigre sushi","dry",1,"bottle"),
+  mk("Chili crunch / Huile pimentée","dry",2,"jar"),mk("พริกเกาหลี / Gochugaru","dry",1,"pack"),mk("พริกแกงเขียวหวาน / Curry vert","dry",1,"jar"),mk("พริกแกงแดง / Curry rouge","dry",1,"jar"),mk("พริกแกงพะแนง / Curry panang","dry",1,"jar"),
+  mk("เครื่องต้มยำ / Pâte tom yum","dry",1,"pack"),mk("รสดี / Bouillon","dry",2,"pack",1),mk("ทูน่าน้ำ / Thon naturel","dry",4,"can",2),mk("ทูน่าน้ำมัน / Thon huile","dry",6,"can",2),mk("หน่อไม้กระป๋อง / Bambou","dry",1,"can"),
+  mk("ขิงดอง / Gingembre mariné","dry",2,"jar"),mk("สาหร่ายซูชิ / Nori","dry",2,"pack",1),mk("แผ่นแป้งเวียดนาม / Galettes riz","dry",2,"pack"),mk("ก๋วยเตี๋ยวเรือ / Nouilles bateau","dry",5,"pack"),mk("หมกหน่อไม้ / Bambou épicé","dry",5,"bag"),
+  mk("กระเพาะปลา / Estomac poisson","dry",2,"box"),mk("มูสลี / Muesli","dry",2,"pack"),mk("อัลมอนด์ / Amandes","dry",1,"bag"),mk("ช็อกโกแลต / Chocolat","dry",10,"sachet"),mk("น้ำผึ้ง / Miel","dry",2,"jar"),
+  mk("น้ำตาลปี๊บ / Sucre palme","dry",2,"pack"),mk("น้ำตาลทรายแดง / Cassonade","dry",10,"pack",5),mk("น้ำตาลไอซิ่ง / Sucre glace","dry",4,"pack"),mk("เจลาติน / Gélatine","dry",25,"sachet",10),mk("เลดี้ฟิงเกอร์ / Biscuits cuillère","dry",1,"pack"),
+  mk("มะเดื่อแห้ง / Figues séchées","dry",2,"pack"),
+  mk("ไอติม / Glace","freezer",2,"pcs"),mk("โมจิชาเขียว / Mochi thé vert","freezer",1,"pack"),mk("เอดามาเมะ / Edamame","freezer",1,"bag"),mk("แซลมอนรมควัน / Saumon fumé","freezer",1,"pack"),mk("แซลมอนสด / Saumon frais","freezer",1,"pack"),
+  mk("ฟัวกราส์ / Foie gras","freezer",1,"pack"),mk("ปอเปี๊ยะทอด / Nems","freezer",1,"pack"),mk("ชีสฟองดู / Fondue fromage","freezer",3,"pack"),mk("ฮะเก๋า / Har Gow","freezer",2,"pack"),mk("เฟรนช์ฟรายส์ / Frites","freezer",1,"pack"),
+  mk("ลูกพรุน / Pruneaux","freezer",1,"kg"),mk("ซอสเพสโต้ / Pesto","freezer",1,"jar"),
+  mk("หมูสับ 500g / Porc haché","meat",1,"pack"),mk("หมูสับ 1kg / Porc haché 1kg","meat",1,"kg"),mk("เนื้อสับ / Bœuf haché","meat",1,"kg"),mk("เนื้อสเต็ก / Steak","meat",3,"pcs"),mk("ซี่โครงหมู / Travers porc","meat",1,"pack"),
+  mk("หมูสามชั้น / Poitrine porc","meat",10,"pcs"),mk("เบคอน / Bacon","meat",1,"pack"),mk("อกไก่ / Blanc poulet","meat",1,"pack"),mk("ปีกไก่ / Ailes poulet","meat",1,"kg"),mk("หอยแมลงภู่ / Moules","meat",2,"pack"),
+  mk("หอยเชลล์ / St-Jacques","meat",1,"pack"),mk("กุนเชียง / Saucisse chinoise","meat",2,"pack"),mk("เนื้อแดดเดียว / Bœuf séché","meat",1,"pack"),mk("กุ้งแห้ง / Crevettes séchées","meat",1,"pack"),mk("หมูต้มแซ่บ / Porc tom saep","meat",2,"box"),
+  mk("ไข่ไก่ / Œufs","fresh",16,"pcs",12),mk("โยเกิร์ต / Yaourt","fresh",5,"pcs",3),mk("มอสซาเรลล่า / Mozzarella","fresh",1,"pack"),mk("ครีม 500ml / Crème","fresh",2,"pack"),mk("นมสด / Lait frais","fresh",1,"bottle",2),
+  mk("นมอัลมอนด์ / Lait amande","fresh",2,"bottle",1),mk("มะนาว / Citrons verts","fresh",2,"pack"),mk("ผักชี / Coriandre","fresh",1,"pack"),mk("ผักบุ้ง / Épinards d'eau","fresh",1,"pack"),mk("ตะไคร้ / Citronnelle","fresh",1,"pack"),
+  mk("มะเขือเทศราชินี / Tomates cerises","fresh",1,"pack"),mk("เสาวรส / Fruits de la passion","fresh",1,"box"),
+  mk("Sprite 1.5L","drinks",3,"bottle",2),mk("Coke 1.5L","drinks",2,"bottle",2),mk("น้ำแอปเปิ้ลโซดา / Cidre","drinks",6,"can"),mk("เบียร์ไม่มีแอลกอฮอล์ / Bière sans alcool","drinks",1,"pack"),mk("น้ำเปล่า / Eau","drinks",1,"pack",2),
+];
+
+// STATE with localStorage persistence
+let lang = localStorage.getItem('kh_lang') || 'th';
+let items = JSON.parse(localStorage.getItem('kh_items') || 'null') || SEED;
+let shop = JSON.parse(localStorage.getItem('kh_shop') || '[]');
+let activeTab = 'all';
+let editId = null;
+let fPhoto = null, fCat = 'fresh', fUnit = 'pcs';
+let scanned = [], picked = [], deductions = [], shelfUpd = [];
+
+function save() {
+  localStorage.setItem('kh_lang', lang);
+  localStorage.setItem('kh_items', JSON.stringify(items));
+  localStorage.setItem('kh_shop', JSON.stringify(shop));
+}
+
+function t(k) { return TR[lang][k] || k; }
+function ul(u) { return t(u) || u; }
+function daysUntil(d) { return d ? Math.ceil((new Date(d)-new Date())/864e5) : null; }
+function getAlerts() { return items.filter(i=>i.qty<i.minQty||(daysUntil(i.expiry)!==null&&daysUntil(i.expiry)<=3)); }
+function getLow() { return items.filter(i=>i.qty<i.minQty); }
+
+function render() {
+  save();
+  // header
+  document.getElementById('hTitle').textContent=t('appTitle');
+  document.getElementById('hSub').textContent=t('appSub');
+  document.getElementById('langBtn').textContent=t('langBtn');
+  document.getElementById('searchQ').placeholder=t('search');
+  document.getElementById('sLbl1').textContent=t('s1');
+  document.getElementById('sLbl2').textContent=t('s2');
+  document.getElementById('sLbl3').textContent=t('s3');
+  document.getElementById('sTotal').textContent=items.length;
+  document.getElementById('sLow').textContent=getLow().length;
+  document.getElementById('sAlert').textContent=getAlerts().length;
+  renderTabs(); renderList(); renderShopBar();
+}
+
+function renderTabs() {
+  const keys=['all','fresh','dry','freezer','meat','household','drinks','alertsTab','shopping'];
+  const icons={all:'📦',fresh:'🥬',dry:'🌾',freezer:'❄️',meat:'🥩',household:'🧴',drinks:'🥤',alertsTab:'🔔',shopping:'🛒'};
+  const counts={alertsTab:getAlerts().length,shopping:shop.length};
+  document.getElementById('tabsRow').innerHTML=keys.map(k=>`<button class="tab-btn${activeTab===k?' active':''}" onclick="setTab('${k}')">${icons[k]} ${t(k)}${counts[k]>0?` <span class="badge">${counts[k]}</span>`:''}</button>`).join('');
+}
+
+function renderShopBar() {
+  const bar=document.getElementById('shopBar');
+  bar.style.display=(activeTab==='shopping'&&shop.length>0)?'flex':'none';
+  document.getElementById('copyLbl').textContent=t('copyList');
+  document.getElementById('clearLbl').textContent=t('clearList');
+}
+
+function getFiltered() {
+  const q=document.getElementById('searchQ').value.toLowerCase();
+  let base=activeTab==='all'?items:activeTab==='shopping'?shop:activeTab==='alertsTab'?getAlerts():items.filter(i=>i.category===activeTab);
+  return q?base.filter(i=>i.name.toLowerCase().includes(q)):base;
+}
+
+function renderList() {
+  const f=getFiltered();
+  if(!f.length) {
+    const m=activeTab==='shopping'?t('emptyShop'):activeTab==='alertsTab'?t('noAlerts'):t('emptyItems');
+    document.getElementById('mainList').innerHTML=`<div class="empty">${m}</div>`;return;
+  }
+  document.getElementById('mainList').innerHTML=f.map((item,i)=>{
+    const cat=CAT[item.category]||CAT.dry;
+    const low=item.qty<item.minQty;
+    const d=daysUntil(item.expiry);
+    let ec='',eb='';
+    if(d!==null){if(d<0){ec='exp';eb=`<span class="pill" style="color:#ef4444;background:#3f0d0d">⏰ ${t('expired')}</span>`;}else if(d<=3){ec='exp';eb=`<span class="pill" style="color:#fb923c;background:#3d1500">⏰ ${t('expiresIn')} ${d} ${t('days')}</span>`;}else if(d<=7){eb=`<span class="pill" style="color:#fbbf24;background:#2d1b00">⏰ ${t('expiresIn')} ${d} ${t('days')}</span>`;}}
+    const lb=low?`<span class="pill" style="color:#fb923c;background:#3d1500">📉 ${t('lowPill')}</span>`:'';
+    const fill=Math.min(100,Math.round(item.qty/Math.max(item.minQty,1)*100));
+    const ins=shop.find(s=>s.id===item.id);
+    const ph=item.photo?`<img src="${item.photo}">`:`${cat.icon}`;
+    return `<div class="card ${low?'low':''} ${ec}" style="animation-delay:${Math.min(i,10)*.03}s">
+      <div class="card-top">
+        <div class="cat-icon" style="background:${cat.bg};border:1px solid ${cat.color}22">${ph}</div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="card-name">${item.name}</div>
+            <div class="card-actions"><button class="icon-btn" onclick="openEdit(${item.id})">✏️</button><button class="icon-btn" onclick="delItem(${item.id})">🗑️</button></div>
+          </div>
+          <div class="qty-row">
+            <span class="qty-num" style="color:${low?'#fb923c':cat.color}">${item.qty}</span>
+            <span class="qty-unit">${ul(item.unit)}</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:${fill}%;background:${low?'#fb923c':cat.color}"></div></div>
+            <span class="qty-min">min ${item.minQty}</span>
+          </div>
+          <div class="badges">${eb}${lb}</div>
+        </div>
+      </div>
+      <div class="card-controls">
+        <button class="ctrl-btn" onclick="adj(${item.id},-1)">−</button>
+        <button class="ctrl-btn" onclick="adj(${item.id},1)">+</button>
+        <button class="shop-toggle ${ins?'on':''}" onclick="toggleShop(${item.id})">${ins?t('inList'):t('addToList')}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setTab(k){activeTab=k;render();}
+function toggleLang(){lang=lang==='th'?'fr':'th';render();}
+function adj(id,d){items=items.map(i=>i.id===id?{...i,qty:Math.max(0,i.qty+d)}:i);render();}
+function delItem(id){items=items.filter(i=>i.id!==id);shop=shop.filter(i=>i.id!==id);render();}
+function toggleShop(id){const item=items.find(i=>i.id===id);if(!item)return;shop=shop.find(s=>s.id===id)?shop.filter(s=>s.id!==id):[...shop,item];render();}
+function copyList(){
+  const txt=shop.map(i=>`• ${i.name} (${Math.max(i.minQty-i.qty,1)} ${ul(i.unit)})`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{const b=document.getElementById('copyBtn');const o=b.innerHTML;b.innerHTML=t('copied');setTimeout(()=>b.innerHTML=o,2000);});
+}
+function clearShop(){shop=getLow();render();}
+
+function closeAll(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));['voiceProc','voiceRes','shelfProc','shelfRes'].forEach(id=>document.getElementById(id).style.display='none');}
+function open(id){closeAll();document.getElementById(id).classList.add('open');}
+
+function openAdd(){
+  open('ovAdd');
+  document.getElementById('lAdd').textContent=t('addItem');
+  document.getElementById('lOrScan').textContent=t('orScan');
+  document.getElementById('lScanR').textContent=t('scanReceipt');
+  document.getElementById('lScanH').textContent=t('scanHint');
+  document.getElementById('lManual').textContent=t('manualAdd');
+  document.getElementById('lCan0').textContent=t('cancel');
+}
+
+function openUse(){
+  document.getElementById('voiceTxt').value='';
+  ['voiceProc','voiceRes','shelfProc','shelfRes'].forEach(id=>document.getElementById(id).style.display='none');
+  open('ovUse');
+  document.getElementById('lUse').textContent=t('useMode');
+  document.getElementById('lUseH').textContent=t('useModeHint');
+  document.getElementById('lShelf').textContent=t('scanShelf');
+  document.getElementById('lShelfH').textContent=t('scanShelfHint');
+  document.getElementById('lVoice').textContent=t('voiceUse');
+  document.getElementById('lVoiceH').textContent=t('voiceHint');
+  document.getElementById('voiceTxt').placeholder=t('voicePH');
+  document.getElementById('lSubmit').textContent=t('submit');
+  document.getElementById('lVRes').textContent=t('voiceResult');
+  document.getElementById('lConfD').textContent=t('confirmDeduct');
+  document.getElementById('lSRes').textContent=t('shelfResult');
+  document.getElementById('lConfS').textContent=t('confirmShelf');
+  document.getElementById('lVoiceProc').textContent=t('voiceProc');
+  document.getElementById('lCan3').textContent=t('cancel');
+}
+
+// MANUAL FORM
+function buildCatGrid(sel){return Object.entries(CAT).map(([k,c])=>{const s=sel===k;return`<button class="cat-pill${s?' sel':''}" style="${s?`background:${c.bg};border-color:${c.color};color:${c.color}`:''}" onclick="selCat('${k}')">${c.icon} ${t(k)}</button>`;}).join('');}
+function buildUnitGrid(sel){return UNITS.map(u=>`<button class="unit-pill${sel===u?' sel':''}" onclick="selUnit('${u}')">${ul(u)}</button>`).join('');}
+function selCat(k){fCat=k;document.getElementById('catGrid').innerHTML=buildCatGrid(k);}
+function selUnit(u){fUnit=u;document.getElementById('unitGrid').innerHTML=buildUnitGrid(u);}
+
+function openManual(item){
+  editId=item?item.id:null; fPhoto=item?item.photo:null; fCat=item?item.category:'fresh'; fUnit=item?item.unit:'pcs';
+  open('ovManual');
+  document.getElementById('manTitle').textContent=item?t('edit'):'✏️ '+t('manualAdd');
+  document.getElementById('fName').value=item?item.name:'';
+  document.getElementById('fQty').value=item?item.qty:1;
+  document.getElementById('fMin').value=item?item.minQty:1;
+  document.getElementById('fExp').value=item?item.expiry:'';
+  document.getElementById('catGrid').innerHTML=buildCatGrid(fCat);
+  document.getElementById('unitGrid').innerHTML=buildUnitGrid(fUnit);
+  document.getElementById('lQty').textContent=t('qty');
+  document.getElementById('lMin').textContent=t('minStock');
+  document.getElementById('lUnit').textContent=t('unit');
+  document.getElementById('lExp').textContent=t('expiry');
+  document.getElementById('lCan2').textContent=t('cancel');
+  document.getElementById('lSave').textContent=t('save');
+  const db=document.getElementById('btnDel');
+  db.style.display=item?'block':'none';db.textContent=t('delete');
+  const drop=document.getElementById('photoDrop');
+  drop.innerHTML=fPhoto?`<img src="${fPhoto}">`:`<span>${t('addPhoto')}</span>`;
+}
+function openEdit(id){openManual(items.find(i=>i.id===id));}
+function handlePhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{fPhoto=ev.target.result;document.getElementById('photoDrop').innerHTML=`<img src="${fPhoto}">`;};r.readAsDataURL(f);}
+function saveManual(){
+  const name=document.getElementById('fName').value.trim();if(!name)return;
+  const obj={name,category:fCat,qty:+document.getElementById('fQty').value,minQty:+document.getElementById('fMin').value,unit:fUnit,expiry:document.getElementById('fExp').value,photo:fPhoto};
+  if(editId){items=items.map(i=>i.id===editId?{...obj,id:editId}:i);}else{items=[...items,{...obj,id:Date.now()}];}
+  closeAll();render();
+}
+function deleteEdit(){if(editId){delItem(editId);closeAll();}}
+
+// SCAN ADD
+async function handleScanAdd(e){
+  const f=e.target.files[0];if(!f)return;e.target.value='';
+  const r=new FileReader();r.onload=async ev=>{
+    const url=ev.target.result;
+    open('ovScanning');
+    document.getElementById('scanPrev').innerHTML=`<img src="${url}" style="width:100%;border-radius:16px;margin-bottom:20px;max-height:200px;object-fit:cover">`;
+    document.getElementById('lScanning').textContent=t('scanning');
+    const found=await aiScanAdd(url.split(',')[1],f.type||'image/jpeg');
+    scanned=found;picked=found.map((_,i)=>i);
+    open('ovScanRes');
+    document.getElementById('scanResPrev').innerHTML=`<img src="${url}" style="width:100%;border-radius:14px;margin-bottom:14px;max-height:130px;object-fit:cover">`;
+    document.getElementById('scanResTitle').textContent=found.length?`✓ ${t('scanResult')} (${found.length})`:`❌ ${t('noItems')}`;
+    document.getElementById('lSelectH').textContent=t('selectHint');
+    document.getElementById('lCan1').textContent=t('cancel');
+    renderScanList();
+  };r.readAsDataURL(f);
+}
+function renderScanList(){
+  document.getElementById('scanResList').innerHTML=scanned.map((item,idx)=>{
+    const cat=CAT[item.category]||CAT.dry;const sel=picked.includes(idx);
+    return `<div class="scan-item" style="background:${sel?'#1a3a1a':'#141f14'};border:1px solid ${sel?'#4ade80':'#2a3f2a'}" onclick="togglePick(${idx})">
+      <div style="width:36px;height:36px;border-radius:10px;background:${cat.bg};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${cat.icon}</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:700;color:${sel?'#4ade80':'#e8f0e8'}">${item.name}</div><div style="font-size:11px;color:#4b7a55;margin-top:2px">${item.qty} ${ul(item.unit)}${item.expiry?' · '+item.expiry:''}</div></div>
+      <div style="width:22px;height:22px;border-radius:11px;border:2px solid ${sel?'#4ade80':'#2a3f2a'};background:${sel?'#4ade80':'transparent'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#0a0f0a;font-weight:800">${sel?'✓':''}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('btnAddPicked').innerHTML=`+ ${t('addSelected')} (${picked.length})`;
+}
+function togglePick(idx){picked=picked.includes(idx)?picked.filter(i=>i!==idx):[...picked,idx];renderScanList();}
+function addPicked(){
+  items=[...items,...scanned.filter((_,i)=>picked.includes(i)).map(it=>({...it,id:Date.now()+Math.random(),minQty:it.minQty||1,photo:null}))];
+  closeAll();render();
+}
+
+// SHELF SCAN
+async function handleShelf(e){
+  const f=e.target.files[0];if(!f)return;e.target.value='';
+  const r=new FileReader();r.onload=async ev=>{
+    const url=ev.target.result;
+    document.getElementById('shelfProcPrev').innerHTML=`<img src="${url}" style="width:100%;border-radius:14px;margin-bottom:14px;max-height:140px;object-fit:cover">`;
+    document.getElementById('shelfProc').style.display='block';
+    document.getElementById('voiceRes').style.display='none';
+    const found=await aiShelf(url.split(',')[1],f.type||'image/jpeg');
+    shelfUpd=found.map(r=>{const it=items.find(i=>i.id===r.id);return it?{...r,name:it.name,unit:it.unit,oldQty:it.qty}:null;}).filter(Boolean);
+    document.getElementById('shelfProc').style.display='none';
+    document.getElementById('shelfResImg').innerHTML=`<img src="${url}" style="width:100%;border-radius:12px;margin-bottom:12px;max-height:120px;object-fit:cover">`;
+    document.getElementById('shelfResList').innerHTML=shelfUpd.map(u=>{const diff=u.newQty-u.oldQty;return`<div class="result-row"><span style="font-size:12px;color:#e8f0e8;flex:1;padding-right:8px">${u.name}</span><span style="font-size:12px;color:#6b8f6b">${u.oldQty}→</span><span style="font-size:14px;font-weight:800;color:${diff<0?'#fb923c':diff>0?'#4ade80':'#6b8f6b'};margin-left:4px">${u.newQty} ${ul(u.unit)}</span></div>`;}).join('');
+    document.getElementById('shelfRes').style.display='block';
+  };r.readAsDataURL(f);
+}
+function confirmShelf(){items=items.map(it=>{const u=shelfUpd.find(x=>x.id===it.id);return u?{...it,qty:u.newQty}:it;});closeAll();render();}
+
+// VOICE
+async function submitVoice(){
+  const txt=document.getElementById('voiceTxt').value.trim();if(!txt)return;
+  document.getElementById('voiceProc').style.display='block';
+  document.getElementById('voiceRes').style.display='none';
+  document.getElementById('shelfRes').style.display='none';
+  const res=await aiVoice(txt);
+  deductions=res.map(r=>{const it=items.find(i=>i.id===r.id);return it?{...r,name:it.name,unit:it.unit}:null;}).filter(Boolean);
+  document.getElementById('voiceProc').style.display='none';
+  document.getElementById('voiceResList').innerHTML=deductions.map(d=>`<div class="result-row"><span style="font-size:13px;color:#e8f0e8">${d.name}</span><span style="font-size:13px;color:#fb923c;font-weight:700">−${d.usedQty} ${ul(d.unit)}</span></div>`).join('');
+  document.getElementById('voiceRes').style.display='block';
+}
+function confirmDeduct(){items=items.map(it=>{const d=deductions.find(x=>x.id===it.id);return d?{...it,qty:Math.max(0,it.qty-d.usedQty)}:it;});closeAll();render();}
+
+// AI
+async function callAI(msgs){
+  try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:msgs})});const d=await res.json();return d.content?.find(b=>b.type==='text')?.text||'[]';}catch{return '[]';}
+}
+function pj(txt){try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch{return[];}}
+
+async function aiScanAdd(b64,mt){return pj(await callAI([{role:'user',content:[{type:'image',source:{type:'base64',media_type:mt,data:b64}},{type:'text',text:'Extract food/household items. Return ONLY JSON array: [{"name":"Thai/French","qty":1,"unit":"pcs|kg|g|l|ml|pack|bottle|bag|box|can|jar|sachet","category":"fresh|dry|freezer|meat|household|drinks","expiry":"YYYY-MM-DD or empty"}]. Return [] if nothing found.'}]}]));}
+
+async function aiShelf(b64,mt){
+  const inv=items.map(i=>`${i.id}:${i.name}`).join('\n');
+  return pj(await callAI([{role:'user',content:[{type:'image',source:{type:'base64',media_type:mt,data:b64}},{type:'text',text:`Count visible quantities in this shelf/fridge photo. Match to inventory:\n${inv}\nReturn ONLY JSON: [{"id":<id>,"newQty":<count>}]. Only items you can clearly count. Return [] if nothing matches.`}]}]));
+}
+
+async function aiVoice(txt){
+  const inv=items.map(i=>`${i.id}:${i.name} (${i.qty} ${i.unit})`).join('\n');
+  return pj(await callAI([{role:'user',content:`User said: "${txt}"\nInventory:\n${inv}\nReturn ONLY JSON: [{"id":<id>,"usedQty":<amount>}]. Return [] if nothing matches.`}]));
+}
+
+render();
+</script>
+</body>
+</html>
